@@ -28,24 +28,37 @@ internal class ExecutionEnvironment {
     /// <summary>
     /// Whether the editor was started in batch mode.
     /// </summary>
+    private static bool? _inBatchMode;
     public static bool InBatchMode {
-        get { return Environment.CommandLine.ToLower().Contains("-batchmode"); }
+        get {
+            if (_inBatchMode.HasValue) return _inBatchMode.Value;
+            _inBatchMode = Environment.CommandLine.ToLower().Contains("-batchmode");
+            return _inBatchMode.Value;
+        }
     }
 
     /// <summary>
     /// Whether the editor was started with a method to executed.
     /// </summary>
+    private static bool? _executeMethodEnabled;
     public static bool ExecuteMethodEnabled {
-        get { return Environment.CommandLine.ToLower().Contains("-executemethod"); }
+        get {
+            if (_executeMethodEnabled.HasValue) return _executeMethodEnabled.Value;
+            _executeMethodEnabled = Environment.CommandLine.ToLower().Contains("-executemethod");
+            return _executeMethodEnabled.Value;
+        }
     }
 
     /// <summary>
     /// Whether the UI should be treated as interactive.
     /// </summary>
+    private static bool? _interactiveMode;
     internal static bool InteractiveMode {
         get {
-            return !(Environment.CommandLine.ToLower().Contains("-gvh_noninteractive") ||
+            if (_interactiveMode.HasValue) return _interactiveMode.Value;
+            _interactiveMode = !(Environment.CommandLine.ToLower().Contains("-gvh_noninteractive") ||
                      ExecutionEnvironment.InBatchMode);
+            return _interactiveMode.Value;
         }
     }
 
