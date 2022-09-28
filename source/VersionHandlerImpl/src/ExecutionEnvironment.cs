@@ -25,40 +25,86 @@ namespace Google {
 /// </summary>
 internal class ExecutionEnvironment {
 
+    private static Lazy<string> s_commandLine_ToLower = new Lazy<string>(() => Environment.CommandLine.ToLower() );
+
+    private static bool Environment_CommandLine_ToLower_Contains(string text) {
+        string _commandLine_ToLower = s_commandLine_ToLower.Value;
+        if (string.IsNullOrEmpty(_commandLine_ToLower)) {
+            return false;
+        }
+        return _commandLine_ToLower.Contains(text);
+    }
+
+    /// <summary>
+    /// Whether the editor has bvrbuildtarget.
+    /// </summary>
+    private static Lazy<bool> s_has_bvrbuildtarget = new Lazy<bool>(() => Environment_CommandLine_ToLower_Contains("-bvrbuildtarget") );
+    private static bool Has_bvrbuildtarget {
+        get {
+            return s_has_bvrbuildtarget.Value;
+        }
+    }
+    
+    /// <summary>
+    /// Whether the editor has gvh_noexitontestcompletion.
+    /// </summary>
+    private static Lazy<bool> s_has_gvh_noexitontestcompletion = new Lazy<bool>(() => Environment_CommandLine_ToLower_Contains("-gvh_noexitontestcompletion") );
+    private static bool Has_gvh_noexitontestcompletion {
+        get {
+            return s_has_gvh_noexitontestcompletion.Value;
+        }
+    }
+
+    /// <summary>
+    /// Whether the editor has gvh_disable.
+    /// </summary>
+    private static Lazy<bool> s_has_gvh_disable = new Lazy<bool>(() => Environment_CommandLine_ToLower_Contains("-gvh_disable") );
+    public static bool Has_gvh_disable {
+        get {
+            return s_has_gvh_disable.Value;
+        }
+    }
+
+    /// <summary>
+    /// Whether the editor has gvh_log_debug.
+    /// </summary>
+    private static Lazy<bool> s_has_gvh_log_debug = new Lazy<bool>(() => Environment_CommandLine_ToLower_Contains("-gvh_log_debug") ); 
+    public static bool Has_gvh_log_debug {
+        get {
+            return s_has_gvh_log_debug.Value;
+        }
+    }
+
     /// <summary>
     /// Whether the editor was started in batch mode.
     /// </summary>
-    private static bool? _inBatchMode;
+    private static Lazy<bool> s_inBatchMode = new Lazy<bool>(() => Environment_CommandLine_ToLower_Contains("-batchmode") );
     public static bool InBatchMode {
         get {
-            if (_inBatchMode.HasValue) return _inBatchMode.Value;
-            _inBatchMode = Environment.CommandLine.ToLower().Contains("-batchmode");
-            return _inBatchMode.Value;
+            return s_inBatchMode.Value;
         }
     }
 
     /// <summary>
     /// Whether the editor was started with a method to executed.
     /// </summary>
-    private static bool? _executeMethodEnabled;
+    private static Lazy<bool> s_executeMethodEnabled = new Lazy<bool>(() => Environment_CommandLine_ToLower_Contains("-executemethod") );
     public static bool ExecuteMethodEnabled {
         get {
-            if (_executeMethodEnabled.HasValue) return _executeMethodEnabled.Value;
-            _executeMethodEnabled = Environment.CommandLine.ToLower().Contains("-executemethod");
-            return _executeMethodEnabled.Value;
+            return s_executeMethodEnabled.Value;
         }
     }
 
     /// <summary>
     /// Whether the UI should be treated as interactive.
     /// </summary>
-    private static bool? _interactiveMode;
-    internal static bool InteractiveMode {
+    private static Lazy<bool> s_interactiveMode = new Lazy<bool>(() => {
+        return !(Environment_CommandLine_ToLower_Contains("-gvh_noninteractive") ||
+            ExecutionEnvironment.InBatchMode);
+    });
+    public static bool InteractiveMode {
         get {
-            if (_interactiveMode.HasValue) return _interactiveMode.Value;
-            _interactiveMode = !(Environment.CommandLine.ToLower().Contains("-gvh_noninteractive") ||
-                     ExecutionEnvironment.InBatchMode);
-            return _interactiveMode.Value;
+            return s_interactiveMode.Value;
         }
     }
 

@@ -406,6 +406,11 @@ namespace Google {
         private readonly string moduleName;
 
         /// <summary>
+        /// Name of the module + "UseProjectSettings".
+        /// </summary>
+        private readonly string moduleNameUseProjectSettings;
+
+        /// <summary>
         /// Get the module name prefix.
         /// </summary>
         public string ModuleName { get { return moduleName; } }
@@ -419,6 +424,7 @@ namespace Google {
         /// </param>
         public ProjectSettings(string moduleName) {
             this.moduleName = moduleName;
+            this.moduleNameUseProjectSettings = this.moduleName + "UseProjectSettings";
         }
 
         /// <summary>
@@ -426,7 +432,8 @@ namespace Google {
         /// Exposed for testing only.
         /// </summary>
         internal string UseProjectSettingsName {
-            get { return moduleName + "UseProjectSettings"; }
+            //get { return moduleName + "UseProjectSettings"; }
+            get { return moduleNameUseProjectSettings; }
         }
 
         /// <summary>
